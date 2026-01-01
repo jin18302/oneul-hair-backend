@@ -37,8 +37,8 @@ public class ReservationController {
 
     @GetMapping("/designers/{designerId}/reservations")
     public ResponseEntity<List<ReservationResponse>> readByDesignerId(//x
-            @PathVariable(name = "designerId") Long designerId,
-            @RequestParam(name = "date", required = false) LocalDate date) {
+                                                                      @PathVariable(name = "designerId") Long designerId,
+                                                                      @RequestParam(name = "date", required = false) LocalDate date) {
 
         List<ReservationResponse> reservationResponseList = reservationService.readByDesignerIdAndDate(designerId, date);
         return ResponseEntity.status(HttpStatus.OK).body(reservationResponseList);
@@ -46,18 +46,28 @@ public class ReservationController {
 
     @GetMapping("/reservations")
     public ResponseEntity<CursorPageResponse<ReservationResponse>> readByUserId(//o
-            @RequestAttribute("userId") Long userId,
-            @RequestParam(name = "lastCursor", required = false, defaultValue = "1") int lastCursor){
+                                                                                @RequestAttribute("userId") Long userId,
+                                                                                @RequestParam(name = "lastCursor", required = false, defaultValue = "1") int lastCursor) {
 
         CursorPageResponse<ReservationResponse> responsePage = reservationService.readByUserId(userId);
         return ResponseEntity.status(HttpStatus.OK).body(responsePage);
     }
 
+    @GetMapping("/reservations/{reservationId}")
+    public ResponseEntity<ReservationResponse> readByReservationId(
+            @RequestAttribute("userId") Long userId,
+            @PathVariable(name = "reservationId") Long reservationId) {
+
+        ReservationResponse response = reservationService.readById(userId, reservationId);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+
     @PatchMapping("/reservations/{reservationId}")
     public ResponseEntity<ReservationResponse> cancelReservation(//x
-            @RequestAttribute("userId") Long userId,
-            @PathVariable(name = "reservationId")Long reservationId
-    ){
+                                                                 @RequestAttribute("userId") Long userId,
+                                                                 @PathVariable(name = "reservationId") Long reservationId
+    ) {
 
         ReservationResponse response = reservationService.cancelReservation(userId, reservationId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -65,10 +75,10 @@ public class ReservationController {
 
     @PatchMapping("/designers/reservations/{reservationId}")
     public ResponseEntity<ReservationResponse> updateReservationStatus(//x
-            @RequestAttribute("userId") Long userId,
-            @PathVariable(name = "reservationId")Long reservationId,
-            @RequestBody @Valid UpdateReservationStatusRequest request
-    ){
+                                                                       @RequestAttribute("userId") Long userId,
+                                                                       @PathVariable(name = "reservationId") Long reservationId,
+                                                                       @RequestBody @Valid UpdateReservationStatusRequest request
+    ) {
         ReservationResponse response = reservationService.updateReservationStatus(userId, reservationId, request);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

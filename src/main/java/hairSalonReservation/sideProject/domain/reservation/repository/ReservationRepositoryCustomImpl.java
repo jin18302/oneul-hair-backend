@@ -66,6 +66,25 @@ public class ReservationRepositoryCustomImpl implements ReservationRepositoryCus
     }
 
     @Override
+    public List<ReservationResponse> findByUserId(Long userId) {
+
+        log.info("userId : {}", userId);
+
+        return queryFactory.select(Projections.constructor(
+                        ReservationResponse.class,
+                        reservation.id,
+                        reservation.serviceMenu.name,
+                        reservation.designer.name,
+                        reservation.reservationStatus,
+                        reservation.date,
+                        reservation.time
+                ))
+                .from(reservation)
+                .where(reservation.user.id.eq(userId))
+                .fetch();
+    }
+
+    @Override
     public List<Reservation> findByReservationSloat(LocalDate date, LocalTime time, Long cursor) {
 
        return queryFactory

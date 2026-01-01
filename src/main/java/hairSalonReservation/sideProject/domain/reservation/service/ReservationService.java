@@ -103,6 +103,15 @@ public class ReservationService {
         return CursorPageResponse.of(responseList, ReservationResponse::id);
     }
 
+    public ReservationResponse readById(Long userId, Long reservationId){
+
+        Reservation reservation = reservationRepository.findById(reservationId)
+               .orElseThrow(() -> new NotFoundException(ErrorCode.RESERVATION_NOT_FOUND));
+
+       if(!reservation.getUser().getId().equals(userId)){throw new ForbiddenException(ErrorCode.FORBIDDEN);}
+       return ReservationResponse.from(reservation);
+    }
+
     @Transactional
     public ReservationResponse cancelReservation(Long userId, Long reservationId) {
 
