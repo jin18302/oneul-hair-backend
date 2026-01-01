@@ -7,6 +7,7 @@ import hairSalonReservation.sideProject.common.config.QueryProperties;
 import hairSalonReservation.sideProject.domain.reservation.dto.response.ReservationResponse;
 import hairSalonReservation.sideProject.domain.reservation.entity.Reservation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -19,6 +20,7 @@ import static hairSalonReservation.sideProject.domain.reservation.entity.QReserv
 import static hairSalonReservation.sideProject.domain.shop.entity.QShop.shop;
 import static hairSalonReservation.sideProject.domain.user.entity.QUser.user;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class ReservationRepositoryCustomImpl implements ReservationRepositoryCustom {
@@ -49,10 +51,11 @@ public class ReservationRepositoryCustomImpl implements ReservationRepositoryCus
                 .select(Projections.constructor(
                         ReservationResponse.class,
                         reservation.id,
-                        reservation.serviceMenu.id,
-                        reservation.designer.id,
-                        reservation.user.id,
-                        reservation.reservationStatus
+                        reservation.serviceMenu.name,
+                        reservation.designer.name,
+                        reservation.reservationStatus,
+                        reservation.date,
+                        reservation.time
                 ))
                 .from(reservation)
                 .where(
