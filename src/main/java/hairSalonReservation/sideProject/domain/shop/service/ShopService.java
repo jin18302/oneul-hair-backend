@@ -7,6 +7,7 @@ import hairSalonReservation.sideProject.common.exception.ErrorCode;
 import hairSalonReservation.sideProject.common.exception.ForbiddenException;
 import hairSalonReservation.sideProject.common.exception.NotFoundException;
 import hairSalonReservation.sideProject.common.util.JsonHelper;
+import hairSalonReservation.sideProject.domain.auth.service.AuthService;
 import hairSalonReservation.sideProject.domain.shop.dto.request.CreateShopRequest;
 import hairSalonReservation.sideProject.domain.shop.dto.request.UpdateShopRequest;
 import hairSalonReservation.sideProject.domain.shop.dto.response.CreateShopResponse;
@@ -35,13 +36,14 @@ public class ShopService {
     private final ShopRepository shopRepository;
     private final ShopRepositoryCustomImpl shopRepositoryCustom;
     private final ShopTagMapperService shopTagMapperService;
+    private final AuthService authService;
 
-    @CheckRole("OWNER")
     @Transactional
-    public CreateShopResponse createShop(CreateShopRequest request, Long userId) {
+    public CreateShopResponse createShop(CreateShopRequest request) {
 
-        if (!userRepository.existsById(userId)) {throw new NotFoundException(ErrorCode.USER_NOT_FOUND);}
-        User user = userRepository.getReferenceById(userId);
+        Long userId = authService.signup(request.ownerSignUpRequest()).id();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
         Shop shop = Shop.of(
                 user,
@@ -74,6 +76,15 @@ public class ShopService {
 
         Shop shop = shopRepository.findById(shopId).orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
         return ShopDetailResponse.from(shop);
+    }
+
+    @CheckRole("OWNER")
+    public ShopDetailResponse readByOwnerId(Long userId){
+        Shop shop = shopRepository.findByUserId(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
+
+        return  ShopDetailResponse.from(shop);
+
     }
 
     @CheckRole("OWNER")
