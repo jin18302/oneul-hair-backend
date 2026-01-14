@@ -37,6 +37,7 @@ public class ScheduleBlockController {
                                                                    @RequestParam(name = "month", required = true) Integer month){
 
 
+
         ReadClosedDaysResponse response = scheduleBlockService.readOffDaysByDesignerId(designerId, month);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

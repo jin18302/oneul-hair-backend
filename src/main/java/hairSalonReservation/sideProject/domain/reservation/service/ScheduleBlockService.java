@@ -10,12 +10,16 @@ import hairSalonReservation.sideProject.domain.designer.entity.Designer;
 import hairSalonReservation.sideProject.domain.designer.repository.DesignerRepository;
 import hairSalonReservation.sideProject.domain.reservation.dto.request.CreateScheduleBlockRequest;
 import hairSalonReservation.sideProject.domain.reservation.dto.response.ReadClosedDaysResponse;
+import hairSalonReservation.sideProject.domain.reservation.dto.response.ReservationResponse;
 import hairSalonReservation.sideProject.domain.reservation.dto.response.ScheduleBlockResponse;
 import hairSalonReservation.sideProject.domain.reservation.dto.response.TimeSlotResponse;
+import hairSalonReservation.sideProject.domain.reservation.entity.BlockType;
 import hairSalonReservation.sideProject.domain.reservation.entity.ScheduleBlock;
-import hairSalonReservation.sideProject.domain.reservation.repository.ScheduleBlockRepositoryCustomImpl;
+import hairSalonReservation.sideProject.domain.reservation.repository.ReservationRepositoryCustomImpl;
 import hairSalonReservation.sideProject.domain.reservation.repository.ScheduleBlockRepository;
+import hairSalonReservation.sideProject.domain.reservation.repository.ScheduleBlockRepositoryCustomImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +28,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
@@ -32,10 +37,11 @@ public class ScheduleBlockService {
     private final ScheduleBlockRepository scheduleBlockRepository;
     private final ScheduleBlockRepositoryCustomImpl blockRepositoryCustom;
     private final DesignerRepository designerRepository;
+    private final ReservationRepositoryCustomImpl repositoryCustom;
 
 
     @Transactional
-    public ScheduleBlockResponse createBlockByOwner(Long ownerId, Long designerId, CreateScheduleBlockRequest request){
+    public ScheduleBlockResponse createBlockByOwner(Long ownerId, Long designerId, CreateScheduleBlockRequest request) {
         Designer designer = designerRepository.findByIdAndIsDeletedFalse(designerId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND));
 
@@ -65,7 +71,6 @@ public class ScheduleBlockService {
     }
 
 
-
     //휴무일 조회 api
     public ReadClosedDaysResponse readOffDaysByDesignerId(Long designerId, Integer month) {
 
@@ -79,15 +84,26 @@ public class ScheduleBlockService {
         Designer designer = designerRepository.findById(designerId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND));
 
-        Optional<ScheduleBlock> block = blockRepositoryCustom.findByDesignerIdAndDate(designerId, date); //null 가능성있는 블록
-        List<LocalTime> timeSlotList = JsonHelper.fromJsonToList(designer.getTimeSlotList(), new TypeReference<>() {});//디자이너의 타임슬롯
+        Optional<ScheduleBlock> block = blockRepositoryCustom.findByDesignerIdAndDate(designerId, date);
+        List<LocalTime> timeSlotList = JsonHelper.fromJsonToList(designer.getTimeSlotList(), new TypeReference<>() {
+        });//디자이너의 모든 타임슬롯
 
-        if (block.isEmpty()) {
-            return timeSlotList.stream().map(t -> TimeSlotResponse.of(t, true)).toList();
+        if (block.isEmpty()) {//블록이 없으면 걍 타임슬롯 그대로 반환함
+            return timeSlotList.stream().map(t -> TimeSlotResponse.of(t, true, null)).toList();
         }
 
-        List<LocalTime> blockTimeList = JsonHelper.fromJsonToList(block.get().getTimeList(), new TypeReference<>() {});
-        return timeSlotList.stream().map(t -> TimeSlotResponse.of(t, !blockTimeList.contains(t))).toList();
+        List<ReservationResponse> reservationList = repositoryCustom.findByDesignerIdAndDate(designerId, date);
+        List<LocalTime> blockTimeList = JsonHelper.fromJsonToList(block.get().getTimeList(), new TypeReference<>() {
+        });
+
+        return timeSlotList.stream().map(t -> {
+
+            boolean isReservable = !blockTimeList.contains(t);
+            boolean isTypeReservation = reservationList.stream().anyMatch(r -> r.time().equals(t));
+            BlockType blockType = isReservable ? null : ( isTypeReservation ? BlockType.RESERVATION : BlockType.BLOCK);
+
+            return TimeSlotResponse.of(t,  isReservable, blockType);
+        }).toList();
     }
 
     @Transactional
