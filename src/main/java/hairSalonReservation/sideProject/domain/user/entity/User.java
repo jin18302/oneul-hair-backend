@@ -25,17 +25,15 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = true)
     private Gender gender;
 
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
-
-    @Column(nullable = false)
-    private Integer point = 0;
 
     private User(String name, String email, String password, String phoneNumber, Gender gender, UserRole userRole){
         this.name = name;
@@ -47,7 +45,7 @@ public class User extends BaseEntity {
     }
 
     public static User of(String name, String email, String password, String phoneNumber, String gender, String userRole){
-        return new User(name, email, password, phoneNumber, Gender.of(gender), UserRole.of(userRole));
+        return new User(name, email, password, phoneNumber,gender == null ? null : Gender.of(gender), UserRole.of(userRole));
     }
 
     public void update(UpdateUserInfoRequest request){
