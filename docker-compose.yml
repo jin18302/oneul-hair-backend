@@ -1,16 +1,16 @@
 services:
-  database:
-    image: 'mysql:9.4'
-    container_name: mysql-container
-    env_file:
-      - .env
-    environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_DATABASE: side
-    ports:
-      - "3307:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
+#  database:
+#    image: 'mysql:9.4'
+#    container_name: mysql-container
+#    env_file:
+#      - .env
+#    environment:
+#      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+#      MYSQL_DATABASE: side
+#    ports:
+#      - "3307:3306"
+#    volumes:
+#      - mysql_data:/var/lib/mysql
 
 
   minio:
@@ -35,7 +35,7 @@ services:
     restart: no
     environment:
       # === DB (스프링 설정에서 spring.datasource.url=${DB_URL} 라면) ===
-      SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/side
+      SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/side
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
 

@@ -34,9 +34,9 @@ public class DesignerService {
 
     @CheckRole("OWNER")
     @Transactional
-    public DesignerDetailResponse createDesigner( Long shopId, Long userId, CreateDesignerRequest request ){
+    public DesignerDetailResponse createDesigner(Long userId, CreateDesignerRequest request ){
 
-        Shop shop = shopRepository.findById(shopId).orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
+        Shop shop = shopRepository.findByUserId(userId).orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
         Long shopOwnerId = shop.getUser().getId();
         if(!shopOwnerId.equals(userId)){throw new ForbiddenException(ErrorCode.FORBIDDEN);}
 
@@ -46,7 +46,6 @@ public class DesignerService {
                 request.name(),
                 request.profileImage(),
                 request.introduction(),
-                JsonHelper.toJson(request.imageUriList()),
                 JsonHelper.toJson(request.snsUriList()),
                 JsonHelper.toJson(designerTimeSlot)
 
@@ -60,6 +59,16 @@ public class DesignerService {
 
         return designerRepositoryCustomImpl.findByShopId(shopId);
     }
+
+    public List<DesignerSummaryResponse> readByOwner( Long ownerId ){
+
+       Shop shop = shopRepository.findByUserId(ownerId)
+               .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
+
+       return designerRepositoryCustomImpl.findByShopId(shop.getId());
+    }
+
+
 
     public DesignerDetailResponse readById(Long designerId){
 
@@ -84,7 +93,6 @@ public class DesignerService {
                 request.name(),
                 request.profileImage(),
                 request.introduction(),
-                JsonHelper.toJson(request.imageUriList()),
                 JsonHelper.toJson(request.snsUriList())
         );
 

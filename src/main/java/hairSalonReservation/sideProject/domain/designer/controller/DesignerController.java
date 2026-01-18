@@ -21,13 +21,12 @@ public class DesignerController {
     private final DesignerService designerService;
 
 
-    @PostMapping("/shops/{shopId}/designers")
+    @PostMapping("/shops/designers")
     public ResponseEntity<DesignerDetailResponse> createDesigner(
-            @PathVariable(name = "shopId") Long shopId,
             @RequestAttribute("userId") Long userId,
             @RequestBody @Valid CreateDesignerRequest request
     ){
-        DesignerDetailResponse designerResponse = designerService.createDesigner(shopId, userId, request);
+        DesignerDetailResponse designerResponse = designerService.createDesigner(userId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(designerResponse);
     }
 
@@ -38,7 +37,13 @@ public class DesignerController {
         return ResponseEntity.status(HttpStatus.OK).body(designerSummaryResponseList);
     }
 
-    @GetMapping("/auth/designers/{designerId}")
+    @GetMapping("/shops/designers")//o
+    public ResponseEntity<List<DesignerSummaryResponse>> readByOwner(@RequestAttribute("userId") Long userId){
+        List<DesignerSummaryResponse> designerSummaryResponseList = designerService.readByOwner(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(designerSummaryResponseList);
+    }
+
+    @GetMapping("/auth/designers/{designerId}")//o
     public ResponseEntity<DesignerDetailResponse> readById(@PathVariable(name = "designerId") Long designerId){
 
         DesignerDetailResponse designerDetailResponse = designerService.readById(designerId);
