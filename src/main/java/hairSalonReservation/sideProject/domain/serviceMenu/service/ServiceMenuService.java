@@ -6,6 +6,7 @@ import hairSalonReservation.sideProject.domain.designer.repository.DesignerRepos
 import hairSalonReservation.sideProject.domain.serviceMenu.dto.request.CreateServiceMenuRequest;
 import hairSalonReservation.sideProject.domain.serviceMenu.dto.request.UpdateServiceMenuRequest;
 import hairSalonReservation.sideProject.domain.serviceMenu.dto.response.ServiceMenuResponse;
+import hairSalonReservation.sideProject.domain.serviceMenu.entity.MenuCategory;
 import hairSalonReservation.sideProject.domain.serviceMenu.entity.ServiceMenu;
 import hairSalonReservation.sideProject.domain.serviceMenu.repository.ServiceMenuRepository;
 import hairSalonReservation.sideProject.domain.serviceMenu.repository.ServiceMenuRepositoryCustomImpl;
@@ -15,6 +16,8 @@ import hairSalonReservation.sideProject.common.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -28,7 +31,7 @@ public class ServiceMenuService {
 
     @CheckRole("OWNER")
     @Transactional
-    public ServiceMenuResponse createServiceMenu(Long userId, Long designerId, CreateServiceMenuRequest request){
+    public List<ServiceMenuResponse> createServiceMenu(Long userId, Long designerId, List<CreateServiceMenuRequest> requestList){
 
         Designer designer = designerRepository.findByIdAndIsDeletedFalse(designerId)
                 .orElseThrow(()->new NotFoundException(ErrorCode.DESIGNER_NOT_FOUND));
@@ -36,16 +39,19 @@ public class ServiceMenuService {
         Long ownerId = designer.getShop().getUser().getId();
         if(!ownerId.equals(userId)){throw new ForbiddenException(ErrorCode.FORBIDDEN);}
 
-        ServiceMenu serviceMenu = ServiceMenu.of(
-                designer,
-                request.category(),
-                request.name(),
-                request.price(),
-                request.introduction()
-        );
+       List<ServiceMenu> serviceMenuList =  requestList.stream().map(r ->
+                ServiceMenu.of(designer, r.category(), r.name(), r.price(), r.introduction())).toList();
 
-        serviceMenuRepository.save(serviceMenu);
-        return ServiceMenuResponse.from(serviceMenu);
+        serviceMenuRepository.saveAll(serviceMenuList);
+        return serviceMenuList.stream().map(ServiceMenuResponse::from).toList();
+    }
+
+
+    public ServiceMenuResponse readById(Long serviceMenuId){
+        ServiceMenu menu = serviceMenuRepository.findById(serviceMenuId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.SERVICE_MENU_NOT_FOUND));
+
+        return ServiceMenuResponse.from(menu);
     }
 
     public List<ServiceMenuResponse> readByDesignerAndCategory(Long designerId, String category){
@@ -61,7 +67,7 @@ public class ServiceMenuService {
         ServiceMenu menu = serviceMenuRepository.findById(serviceMenuId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.SERVICE_MENU_NOT_FOUND));
 
-        Long shopOwnerId = menu.getDesigner().getShop().getId();
+        Long shopOwnerId = menu.getDesigner().getShop().getUser().getId();
         if(!userId.equals(shopOwnerId)){throw new ForbiddenException(ErrorCode.FORBIDDEN);}
 
         menu.update(
@@ -84,5 +90,9 @@ public class ServiceMenuService {
         if(!userId.equals(shopOwnerId)){throw new ForbiddenException(ErrorCode.FORBIDDEN);}
 
         menu.delete();
+    }
+
+    public List<String> readAllCategory(){
+        return Arrays.stream(MenuCategory.values()).map(Enum::name).toList();
     }
 }

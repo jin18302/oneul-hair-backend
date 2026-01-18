@@ -20,16 +20,23 @@ public class ServiceMenuController {
     private final ServiceMenuService serviceMenuService;
 
     @PostMapping("/designers/{designerId}/service-menus")
-    public ResponseEntity<ServiceMenuResponse> createServiceMenu(
+    public ResponseEntity<List<ServiceMenuResponse>> createServiceMenu(
             @RequestAttribute(name = "userId")Long userId,
             @PathVariable(name = "designerId")Long designerId,
-            @RequestBody @Valid CreateServiceMenuRequest request
+            @RequestBody @Valid List<CreateServiceMenuRequest> requestList
     ) {
-        ServiceMenuResponse serviceMenuResponse = serviceMenuService.createServiceMenu(userId, designerId, request);
+        List<ServiceMenuResponse> serviceMenuResponse = serviceMenuService.createServiceMenu(userId, designerId, requestList);
         return ResponseEntity.status(HttpStatus.CREATED).body(serviceMenuResponse);
     }
 
-    @GetMapping("/designers/{designerId}/service-menus")
+    @GetMapping("/service-menus/{serviceMenuId}")
+    public ResponseEntity<ServiceMenuResponse> readById(@PathVariable(name = "serviceMenuId") Long serviceMenuId){
+
+        ServiceMenuResponse response = serviceMenuService.readById(serviceMenuId);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/auth/designers/{designerId}/service-menus")
     public ResponseEntity<List<ServiceMenuResponse>> readByDesignerAndCategory(
             @PathVariable(name = "designerId") Long designerId,
             @RequestParam(name = "category") String category
@@ -54,5 +61,12 @@ public class ServiceMenuController {
             @PathVariable(name = "serviceMenuId") Long serviceMenuId) {
         serviceMenuService.deleteServiceMenu(userId, serviceMenuId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping("/auth/menu-categories")
+    public ResponseEntity<List<String>> readAllCategory(){
+
+        List<String> categoryList = serviceMenuService.readAllCategory();
+        return ResponseEntity.ok(categoryList);
     }
 }
