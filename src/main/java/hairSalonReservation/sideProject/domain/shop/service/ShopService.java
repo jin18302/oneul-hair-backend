@@ -54,7 +54,6 @@ public class ShopService {
                 request.openTime(),
                 request.endTime(),
                 request.introduction(),
-                JsonHelper.toJson(request.imageUrlList()),
                 JsonHelper.toJson(request.snsUriList())
         );
 
@@ -95,19 +94,14 @@ public class ShopService {
         Long shopOwnerId = shopRepositoryCustom.findShopOwnerIdByShopId(shopId);
         if (!userId.equals(shopOwnerId)) {throw new ForbiddenException(ErrorCode.FORBIDDEN);}
 
-        ShopStatus shopStatus = ShopStatus.of(updateShopRequest.shopStatus());
-
         shop.update(
                 updateShopRequest.name(),
-                updateShopRequest.businessId(),
                 updateShopRequest.address(),
                 updateShopRequest.phoneNumber(),
                 updateShopRequest.openTime(),
                 updateShopRequest.endTime(),
                 updateShopRequest.introduction(),
-                JsonHelper.toJson(updateShopRequest.imageUrlList()),
-                JsonHelper.toJson(updateShopRequest.snsUriList()),
-                shopStatus
+                JsonHelper.toJson(updateShopRequest.snsUriList())
         );
         shopTagMapperService.updateShopTagMapper(userId, shop, new ArrayList<>(updateShopRequest.shopTagIdSet()));
         return ShopDetailResponse.from(shop);

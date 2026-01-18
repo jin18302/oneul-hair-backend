@@ -2,6 +2,8 @@ package hairSalonReservation.sideProject.domain.shop.dto.response;
 
 import hairSalonReservation.sideProject.domain.shop.entity.Shop;
 import hairSalonReservation.sideProject.domain.shop.entity.ShopStatus;
+import hairSalonReservation.sideProject.domain.shop.entity.ShopTag;
+import hairSalonReservation.sideProject.domain.shop.entity.ShopTagMapper;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -15,7 +17,6 @@ public record ShopDetailResponse(
         LocalTime openTime,
         LocalTime endTime,
         String introduction,
-        String imageUrlList,
         String snsUriList,
         List<String> shopTagList,
         ShopStatus shopStatus,
@@ -35,7 +36,6 @@ public record ShopDetailResponse(
                 shop.getOpenTime(),
                 shop.getEndTime(),
                 shop.getIntroduction(),
-                shop.getImageUrlList(),
                 shop.getSnsUriList(),
                 shopTagList,
                 shop.getShopStatus(),

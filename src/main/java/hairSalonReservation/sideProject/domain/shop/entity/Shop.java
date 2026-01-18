@@ -21,7 +21,7 @@ public class Shop extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     private User user;
 
     @Column(nullable = false, unique = true)
@@ -48,8 +48,6 @@ public class Shop extends BaseEntity {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ShopTagMapper> shopTagMapperList = new ArrayList<>();
 
-    @Column(nullable = true, columnDefinition = "TEXT")
-    private String imageUrlList;
 
     @Column(nullable = true, columnDefinition = "TEXT")
     private String snsUriList;
@@ -60,7 +58,7 @@ public class Shop extends BaseEntity {
     private Long likeCount = 0L;
 
     private Shop(User user, String name, String businessId, String address, String phoneNumber, LocalTime openTime, LocalTime endTime,
-                 String introduction, String imageUrlList, String snsUriList){
+                 String introduction, String snsUriList){
         this.user = user;
         this.name = name;
         this.businessId = businessId;
@@ -69,27 +67,23 @@ public class Shop extends BaseEntity {
         this.openTime = openTime;
         this.endTime = endTime;
         this.introduction = introduction;
-        this.imageUrlList = imageUrlList;
         this.snsUriList = snsUriList;
     }
 
     public static Shop of(User user, String name, String businessId, String address, String phoneNumber, LocalTime openTime, LocalTime endTime,
-                          String introduction, String imageUrlList, String snsUriList){
-        return new Shop(user, name, businessId, address, phoneNumber, openTime, endTime, introduction, imageUrlList, snsUriList);
+                          String introduction, String snsUriList){
+        return new Shop(user, name, businessId, address, phoneNumber, openTime, endTime, introduction, snsUriList);
     }
 
-    public void update(String name, String businessId, String address, String phoneNumber, LocalTime openTime, LocalTime endTime,
-                 String introduction, String imageUrlList, String snsUriList,  ShopStatus shopStatus){
+    public void update(String name,  String address, String phoneNumber, LocalTime openTime, LocalTime endTime,
+                 String introduction, String snsUriList){
         this.name = name;
-        this.businessId = businessId;
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.openTime = openTime;
         this.endTime = endTime;
         this.introduction = introduction;
-        this.imageUrlList = imageUrlList;
         this.snsUriList = snsUriList;
-        this.shopStatus = shopStatus;
     }
 
     public void delete(){

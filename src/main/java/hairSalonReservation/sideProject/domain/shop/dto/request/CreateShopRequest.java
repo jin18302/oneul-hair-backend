@@ -1,10 +1,9 @@
 package hairSalonReservation.sideProject.domain.shop.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import hairSalonReservation.sideProject.domain.auth.dto.request.SignUpRequest;
+import jakarta.validation.constraints.*;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -18,8 +17,8 @@ public record CreateShopRequest(
         @JsonFormat(pattern = "HH:mm") @NotNull LocalTime openTime,
         @JsonFormat(pattern = "HH:mm") @NotNull LocalTime endTime,
         @NotEmpty String introduction,
-        List<String> imageUrlList,
         List<String> snsUriList,
-        Set<Long> shopTagIdSet
+        Set<Long> shopTagIdSet,
+        SignUpRequest ownerSignUpRequest
 ) {
 }

@@ -45,8 +45,7 @@ public class ShopRepositoryCustomImpl implements ShopRepositoryCustom {
                                 shop.name,
                                 shop.introduction,
                                 shop.address,
-                                shop.shopStatus,
-                                shop.imageUrlList
+                                shop.shopStatus
                         ))
                 .from(shop)
                 .where(builder)
