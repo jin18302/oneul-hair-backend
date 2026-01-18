@@ -1,6 +1,7 @@
 package hairSalonReservation.sideProject.domain.reservation.controller;
 
 import hairSalonReservation.sideProject.domain.reservation.dto.request.CreateScheduleBlockRequest;
+import hairSalonReservation.sideProject.domain.reservation.dto.response.DesignerBlockResponse;
 import hairSalonReservation.sideProject.domain.reservation.dto.response.ReadClosedDaysResponse;
 import hairSalonReservation.sideProject.domain.reservation.dto.response.ScheduleBlockResponse;
 import hairSalonReservation.sideProject.domain.reservation.dto.response.TimeSlotResponse;
@@ -11,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -27,7 +27,7 @@ public class ScheduleBlockController {
             , @RequestBody CreateScheduleBlockRequest request
             , @PathVariable Long designerId
     ){
-        ScheduleBlockResponse response = scheduleBlockService.createBlockByOwner(ownerId, designerId, request);
+        ScheduleBlockResponse response = scheduleBlockService.createBlock(ownerId, designerId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -36,10 +36,17 @@ public class ScheduleBlockController {
     public ResponseEntity<ReadClosedDaysResponse> readByDesignerId(@PathVariable(name = "designerId") Long designerId,
                                                                    @RequestParam(name = "month", required = true) Integer month){
 
-
-
-        ReadClosedDaysResponse response = scheduleBlockService.readOffDaysByDesignerId(designerId, month);
+        ReadClosedDaysResponse response = scheduleBlockService.readDayOffByDesignerIdAndMonth(designerId, month);
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/shops/schedule-blocks")
+    public ResponseEntity<List<DesignerBlockResponse>> readByShopAndDate(
+            @RequestAttribute(name = "userId")Long ownerId,
+            @RequestParam(name = "date") LocalDate date){
+
+        List<DesignerBlockResponse> responseList = scheduleBlockService.readByShopAndDate(ownerId, date);
+        return ResponseEntity.ok(responseList);
     }
 
     @GetMapping("/auth/designers/{designerId}/time-slots")
@@ -51,14 +58,13 @@ public class ScheduleBlockController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @DeleteMapping("/designers/{designerId}/schedule-blocks")
+    @DeleteMapping("/designers/{designerId}/schedule-blocks/{blockId}")
     public ResponseEntity<Void> deleteBlock(
             @RequestAttribute("userId") Long ownerId,
             @PathVariable(name = "designerId") Long designerId,
-            @RequestParam(name = "date", required = true) LocalDate date,
-            @RequestParam(name = "time", required = true) LocalTime time
+           @PathVariable(name = "blockId") Long blockId
     ){
-        scheduleBlockService.deleteBlock(ownerId, designerId, date, time);
+        scheduleBlockService.deleteBlock(ownerId, designerId, blockId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
