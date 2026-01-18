@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("/api/auth")
+@RequestMapping("/api")
 @RestController
 @RequiredArgsConstructor
 public class ShopTagController {
