@@ -31,37 +31,35 @@ public class Designer extends BaseEntity {
     private String profileImage;
 
     @Column(nullable = true, columnDefinition = "TEXT")
-    private String imageUrlList;
-
-    @Column(nullable = true, columnDefinition = "TEXT")
     private String snsUrlList;
 
     @Column(nullable = false,  columnDefinition = "TEXT")
     private String timeSlotList;
 
     private Designer(Shop shop, String name, String profileImage, String introduction,
-                     String imageUrlList, String snsUriList, String timeSlotList
+                      String snsUriList, String timeSlotList
     ){
         this.shop = shop;
         this.name = name;
         this.profileImage = profileImage;
         this.introduction = introduction;
-        this.imageUrlList = imageUrlList;
         this.snsUrlList = snsUriList;
         this.timeSlotList = timeSlotList;
     }
 
     public static Designer of(Shop shop, String name, String profileImage, String introduction,
-                              String imageUrlList, String snsUriList, String timeSlotList
+                             String snsUriList, String timeSlotList
     ){
-        return new Designer(shop, name, profileImage, introduction, imageUrlList, snsUriList, timeSlotList);
+        return new Designer(shop, name, profileImage, introduction, snsUriList, timeSlotList);
+
+
+
     }
 
-    public void update(String name, String profileImage, String introduction, String imageUrlList, String snsUriList){
+    public void update(String name, String profileImage, String introduction, String snsUriList){
         this.name = name;
         this.profileImage = profileImage;
         this.introduction = introduction;
-        this.imageUrlList = imageUrlList;
         this.snsUrlList = snsUriList;
     }
 

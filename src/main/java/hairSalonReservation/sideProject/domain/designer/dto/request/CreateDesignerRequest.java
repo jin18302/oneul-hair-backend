@@ -9,7 +9,6 @@ public record CreateDesignerRequest(
         @NotEmpty @Size(max = 20) String name,
         @NotEmpty String introduction,
         @NotEmpty String profileImage,
-        List<String> imageUriList,
         List<String> snsUriList
 ) {
 }
