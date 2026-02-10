@@ -12,6 +12,7 @@ import java.util.List;
 public record ShopDetailResponse(
         Long id,
         String name,
+        String mainImage,
         String address,
         String phoneNumber,
         LocalTime openTime,
@@ -30,6 +31,7 @@ public record ShopDetailResponse(
 
         return new ShopDetailResponse(
                 shop.getId(),
+                shop.getMainImage(),
                 shop.getName(),
                 shop.getAddress(),
                 shop.getPhoneNumber(),

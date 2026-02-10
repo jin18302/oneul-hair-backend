@@ -11,6 +11,7 @@ import java.util.Set;
 
 public record CreateShopRequest(
         @Size(max = 15) @NotEmpty String name,
+        String mainImage,
         @NotEmpty String businessId,
         @NotEmpty String address,
         @Pattern(regexp = "^\\d{2,3}-\\d{3,4}-\\d{4}$") @NotEmpty String phoneNumber,

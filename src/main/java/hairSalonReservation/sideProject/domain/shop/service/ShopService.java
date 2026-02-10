@@ -48,6 +48,7 @@ public class ShopService {
         Shop shop = Shop.of(
                 user,
                 request.name(),
+                request.mainImage(),
                 request.businessId(),
                 request.address(),
                 request.phoneNumber(),
@@ -58,15 +59,14 @@ public class ShopService {
         );
 
         shopRepository.save(shop);
-
         shopTagMapperService.createShopTagMapper(shop, new ArrayList<>(request.shopTagIdSet()));
         return CreateShopResponse.from(shop);
     }
 
-    public CursorPageResponse<ShopSummaryResponse> readByFilter(String area, List<Long> tagList, String order, String sortFelid, String lastCursor) {
+    public CursorPageResponse<ShopSummaryResponse> readByFilter(List<String> areaList, List<Long> tagList, String order, String sortFelid, String lastCursor) {
 
         List<ShopSummaryResponse> shopSummaryResponseList = shopRepositoryCustom
-                .findByFilter(area, tagList, ShopSortField.valueOf(sortFelid), Order.valueOf(order), lastCursor);
+                .findByFilter(areaList, tagList, ShopSortField.valueOf(sortFelid), Order.valueOf(order), lastCursor);
 
         return CursorPageResponse.of(shopSummaryResponseList, ShopSummaryResponse::getId);
     }
@@ -96,6 +96,7 @@ public class ShopService {
 
         shop.update(
                 updateShopRequest.name(),
+                updateShopRequest.mainImage(),
                 updateShopRequest.address(),
                 updateShopRequest.phoneNumber(),
                 updateShopRequest.openTime(),

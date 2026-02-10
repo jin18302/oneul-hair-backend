@@ -11,6 +11,7 @@ import java.util.List;
 public record CreateShopResponse(
         Long id,
         String name,
+        String mainImage,
         String businessId,
         String address,
         String phoneNumber,
@@ -29,6 +30,7 @@ public record CreateShopResponse(
 
         return new CreateShopResponse(
                 shop.getId(),
+                shop.getMainImage(),
                 shop.getName(),
                 shop.getBusinessId(),
                 shop.getAddress(),

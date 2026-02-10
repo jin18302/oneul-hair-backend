@@ -45,6 +45,9 @@ public class Shop extends BaseEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String introduction;
 
+    @Column(nullable = true)
+    private String mainImage;
+
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ShopTagMapper> shopTagMapperList = new ArrayList<>();
 
@@ -57,10 +60,11 @@ public class Shop extends BaseEntity {
 
     private Long likeCount = 0L;
 
-    private Shop(User user, String name, String businessId, String address, String phoneNumber, LocalTime openTime, LocalTime endTime,
+    private Shop(User user, String name, String mainImage, String businessId, String address, String phoneNumber, LocalTime openTime, LocalTime endTime,
                  String introduction, String snsUriList){
         this.user = user;
         this.name = name;
+        this.mainImage = mainImage;
         this.businessId = businessId;
         this.address = address;
         this.phoneNumber = phoneNumber;
@@ -70,14 +74,15 @@ public class Shop extends BaseEntity {
         this.snsUriList = snsUriList;
     }
 
-    public static Shop of(User user, String name, String businessId, String address, String phoneNumber, LocalTime openTime, LocalTime endTime,
+    public static Shop of(User user, String name, String mainImage, String businessId, String address, String phoneNumber, LocalTime openTime, LocalTime endTime,
                           String introduction, String snsUriList){
-        return new Shop(user, name, businessId, address, phoneNumber, openTime, endTime, introduction, snsUriList);
+        return new Shop(user, name, mainImage, businessId, address, phoneNumber, openTime, endTime, introduction, snsUriList);
     }
 
-    public void update(String name,  String address, String phoneNumber, LocalTime openTime, LocalTime endTime,
+    public void update(String name, String mainImage, String address, String phoneNumber, LocalTime openTime, LocalTime endTime,
                  String introduction, String snsUriList){
         this.name = name;
+        this.mainImage = mainImage;
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.openTime = openTime;
