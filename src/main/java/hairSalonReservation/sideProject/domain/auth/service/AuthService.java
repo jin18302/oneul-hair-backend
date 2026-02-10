@@ -31,7 +31,7 @@ public class AuthService {
         if(userRepository.existsByEmail(request.email())){throw new ConflictException(ErrorCode.DUPLICATE_EMAIL);}
 
         String encodedPassword = passwordEncoder.encode(request.password());
-        User user = User.of(request.name(), request.email(), encodedPassword, request.phoneNumber(), request.gender(), request.userRole());
+        User user = User.of(request.name(), request.profileImage(), request.email(), encodedPassword, request.phoneNumber(), request.gender(), request.userRole());
         userRepository.save(user);
 
         return SignUpResponse.from(user);

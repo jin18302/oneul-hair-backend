@@ -35,22 +35,25 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
-    private User(String name, String email, String password, String phoneNumber, Gender gender, UserRole userRole){
+    @Column(nullable = true, name = "profile_image")
+    private String profileImage;
+
+    private User(String name, String profileImage, String email, String password, String phoneNumber, Gender gender, UserRole userRole ){
         this.name = name;
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.gender = gender;
         this.userRole = userRole;
+        this.profileImage =  profileImage;
     }
 
-    public static User of(String name, String email, String password, String phoneNumber, String gender, String userRole){
-        return new User(name, email, password, phoneNumber,gender == null ? null : Gender.of(gender), UserRole.of(userRole));
+    public static User of(String name, String profileImage,  String email, String password, String phoneNumber, String gender, String userRole){
+        return new User(name, profileImage, email, password, phoneNumber,gender == null ? null : Gender.of(gender), UserRole.of(userRole));
     }
 
     public void update(UpdateUserInfoRequest request){
         this.name = request.name();
         this.email = request.email();
-        this.phoneNumber = phoneNumber;
     }
 }

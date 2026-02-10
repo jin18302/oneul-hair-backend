@@ -10,6 +10,8 @@ public record SignUpRequest(
         @Size(max = 15)
         String name,
 
+        String profileImage,
+
         @NotEmpty
         @Email
         String email,

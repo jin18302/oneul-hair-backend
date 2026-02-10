@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 
 public record UserResponse(
         Long id,
+        String profileImage,
         String name,
         String email,
         Gender gender,
@@ -18,6 +19,7 @@ public record UserResponse(
     public static UserResponse from(User user){
         return new UserResponse(
                 user.getId(),
+                user.getProfileImage(),
                 user.getName(),
                 user.getEmail(),
                 user.getGender(),
