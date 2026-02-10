@@ -1,7 +1,9 @@
 package hairSalonReservation.sideProject.common.image.dto;
 
-public record PresignedUrlResponse(String url) {
-    public static PresignedUrlResponse of(String url){
-        return new PresignedUrlResponse(url);
+import javax.annotation.Nullable;
+
+public record PresignedUrlResponse(String url, String imageName) {
+    public static PresignedUrlResponse of(String url, @Nullable String imageName){
+        return new PresignedUrlResponse(url, imageName);
     }
 }
