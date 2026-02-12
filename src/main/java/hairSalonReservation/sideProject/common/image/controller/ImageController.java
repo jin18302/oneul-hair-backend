@@ -5,10 +5,7 @@ import hairSalonReservation.sideProject.common.image.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RequestMapping("/api/auth")
@@ -18,7 +15,7 @@ public class ImageController {
 
     private final ImageService imageService;
 
-    @GetMapping("/images/upload/{domainPrefix}/{imageName}")
+    @PostMapping("/images/upload/{domainPrefix}/{imageName}")
     public ResponseEntity<PresignedUrlResponse> getPresignedUploadUrl(@PathVariable(name = "imageName") String imageName,
                                                                       @PathVariable(name = "domainPrefix") String domainPrefix) {
         return ResponseEntity.ok(imageService.generatePresignedUploadUrl(domainPrefix, imageName));
