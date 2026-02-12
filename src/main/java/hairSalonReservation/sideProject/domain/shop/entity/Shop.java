@@ -36,14 +36,14 @@ public class Shop extends BaseEntity {
     @Column(nullable = false)
     private String phoneNumber;
 
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String introduction;
+
     @Column(nullable = false)
     private LocalTime openTime;
 
     @Column(nullable = false)
     private LocalTime endTime;
-
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String introduction;
 
     @Column(nullable = true)
     private String mainImage;

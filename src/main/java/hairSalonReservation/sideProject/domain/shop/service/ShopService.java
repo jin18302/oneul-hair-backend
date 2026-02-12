@@ -3,12 +3,15 @@ package hairSalonReservation.sideProject.domain.shop.service;
 import com.querydsl.core.types.Order;
 import hairSalonReservation.sideProject.common.annotation.CheckRole;
 import hairSalonReservation.sideProject.common.cursor.CursorPageResponse;
+import hairSalonReservation.sideProject.common.exception.BadRequestException;
 import hairSalonReservation.sideProject.common.exception.ErrorCode;
 import hairSalonReservation.sideProject.common.exception.ForbiddenException;
 import hairSalonReservation.sideProject.common.exception.NotFoundException;
 import hairSalonReservation.sideProject.common.util.JsonHelper;
+import hairSalonReservation.sideProject.common.util.PasswordEncoder;
 import hairSalonReservation.sideProject.domain.auth.service.AuthService;
 import hairSalonReservation.sideProject.domain.shop.dto.request.CreateShopRequest;
+import hairSalonReservation.sideProject.domain.shop.dto.request.DeleteShopRequest;
 import hairSalonReservation.sideProject.domain.shop.dto.request.UpdateShopRequest;
 import hairSalonReservation.sideProject.domain.shop.dto.response.CreateShopResponse;
 import hairSalonReservation.sideProject.domain.shop.dto.response.ShopDetailResponse;
@@ -37,6 +40,7 @@ public class ShopService {
     private final ShopRepositoryCustomImpl shopRepositoryCustom;
     private final ShopTagMapperService shopTagMapperService;
     private final AuthService authService;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public CreateShopResponse createShop(CreateShopRequest request) {
@@ -110,14 +114,19 @@ public class ShopService {
 
     @CheckRole("OWNER")
     @Transactional
-    public void deleteShop(Long userId, Long shopId) {
+    public void deleteShop(Long userId, Long shopId, DeleteShopRequest request) {
 
         Shop shop = shopRepository.findByIdAndIsDeletedFalse(shopId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.SHOP_NOT_FOUND));
 
         Long shopOwnerId = shopRepositoryCustom.findShopOwnerIdByShopId(shopId);
+
         if (!userId.equals(shopOwnerId)) {throw new ForbiddenException(ErrorCode.FORBIDDEN);}
+        if(!passwordEncoder.matches(request.password(), shop.getUser().getPassword())){
+            throw new BadRequestException(ErrorCode.INVALID_PASSWORD);
+        }
 
         shop.delete();
+        shop.getUser().delete();
     }
 }

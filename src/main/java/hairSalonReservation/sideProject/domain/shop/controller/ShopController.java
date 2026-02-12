@@ -2,6 +2,7 @@ package hairSalonReservation.sideProject.domain.shop.controller;
 
 import hairSalonReservation.sideProject.common.cursor.CursorPageResponse;
 import hairSalonReservation.sideProject.domain.shop.dto.request.CreateShopRequest;
+import hairSalonReservation.sideProject.domain.shop.dto.request.DeleteShopRequest;
 import hairSalonReservation.sideProject.domain.shop.dto.request.UpdateShopRequest;
 import hairSalonReservation.sideProject.domain.shop.dto.response.CreateShopResponse;
 import hairSalonReservation.sideProject.domain.shop.dto.response.ShopDetailResponse;
@@ -68,10 +69,10 @@ public class ShopController {
     @DeleteMapping("/shops/{shopId}")//x
     public ResponseEntity<Void> deleteShop(
             @RequestAttribute("userId") Long userId,
-            @PathVariable("shopId") Long shopId
+            @PathVariable("shopId") Long shopId,
+            DeleteShopRequest request
     ){
-
-        shopService.deleteShop(userId, shopId);
+        shopService.deleteShop(userId, shopId, request);
         return ResponseEntity.ok().build();
     }
 }

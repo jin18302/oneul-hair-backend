@@ -24,8 +24,7 @@ public class ShopTagController {
         ShopTagResponse shopTagResponse = shopTagService.createShopTag(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(shopTagResponse);
     }
-
-    @GetMapping("/shop-tags")
+    @GetMapping("/auth/shop-tags")
     public ResponseEntity<List<ShopTagResponse>> readAllShopTag(){
         List<ShopTagResponse> shopTagResponseList = shopTagService.readAllShopTag();
         return ResponseEntity.status(HttpStatus.OK).body(shopTagResponseList);
