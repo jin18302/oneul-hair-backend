@@ -7,6 +7,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Entity @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -28,6 +30,9 @@ public class User extends BaseEntity {
     @Column(nullable = true)
     private String phoneNumber;
 
+    @Column(nullable = true, name = "profile_image")
+    private String profileImage;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = true)
     private Gender gender;
@@ -35,8 +40,7 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
-    @Column(nullable = true, name = "profile_image")
-    private String profileImage;
+
 
     private User(String name, String profileImage, String email, String password, String phoneNumber, Gender gender, UserRole userRole ){
         this.name = name;
@@ -54,6 +58,13 @@ public class User extends BaseEntity {
 
     public void update(UpdateUserInfoRequest request){
         this.name = request.name();
+        this.profileImage = request.profileImage();
         this.email = request.email();
+        this.phoneNumber = request.phoneNumber();
+    }
+
+    public void delete(){
+        this.setDeleted(true);
+        this.setDeletedAt(LocalDateTime.now());
     }
 }
