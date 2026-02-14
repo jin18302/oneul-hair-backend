@@ -7,6 +7,7 @@ import hairSalonReservation.sideProject.common.exception.BadRequestException;
 import hairSalonReservation.sideProject.common.exception.ErrorCode;
 import hairSalonReservation.sideProject.common.exception.ForbiddenException;
 import hairSalonReservation.sideProject.common.exception.NotFoundException;
+import hairSalonReservation.sideProject.common.image.service.ImageService;
 import hairSalonReservation.sideProject.common.util.JsonHelper;
 import hairSalonReservation.sideProject.common.util.PasswordEncoder;
 import hairSalonReservation.sideProject.domain.auth.service.AuthService;
@@ -41,6 +42,7 @@ public class ShopService {
     private final ShopTagMapperService shopTagMapperService;
     private final AuthService authService;
     private final PasswordEncoder passwordEncoder;
+    private final ImageService imageService;
 
     @Transactional
     public CreateShopResponse createShop(CreateShopRequest request) {
@@ -98,6 +100,8 @@ public class ShopService {
         Long shopOwnerId = shopRepositoryCustom.findShopOwnerIdByShopId(shopId);
         if (!userId.equals(shopOwnerId)) {throw new ForbiddenException(ErrorCode.FORBIDDEN);}
 
+        imageService.updateImage(shop.getMainImage(), updateShopRequest.mainImage());
+
         shop.update(
                 updateShopRequest.name(),
                 updateShopRequest.mainImage(),
@@ -108,6 +112,7 @@ public class ShopService {
                 updateShopRequest.introduction(),
                 JsonHelper.toJson(updateShopRequest.snsUriList())
         );
+
         shopTagMapperService.updateShopTagMapper(userId, shop, new ArrayList<>(updateShopRequest.shopTagIdSet()));
         return ShopDetailResponse.from(shop);
     }

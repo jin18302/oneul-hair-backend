@@ -1,6 +1,7 @@
 package hairSalonReservation.sideProject.domain.designer.service;
 
 import hairSalonReservation.sideProject.common.annotation.CheckRole;
+import hairSalonReservation.sideProject.common.image.service.ImageService;
 import hairSalonReservation.sideProject.common.util.JsonHelper;
 import hairSalonReservation.sideProject.domain.designer.dto.request.CreateDesignerRequest;
 import hairSalonReservation.sideProject.domain.designer.dto.request.UpdateDesignerRequest;
@@ -31,6 +32,7 @@ public class DesignerService {
     private final DesignerRepositoryCustomImpl designerRepositoryCustomImpl;
     private final ShopRepository shopRepository;
     private final TimeSlotCreator timeSlotCreator;
+    private final ImageService imageService;
 
     @CheckRole("OWNER")
     @Transactional
@@ -88,6 +90,7 @@ public class DesignerService {
         Long shopOwnerId = designer.getShop().getUser().getId();
 
         if(!shopOwnerId.equals(userId)){throw new ForbiddenException(ErrorCode.FORBIDDEN);}
+        imageService.updateImage(designer.getProfileImage(), request.profileImage());
 
         designer.update(
                 request.name(),

@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -68,18 +69,6 @@ public class ImageService {
         return domainPrefix + "/" + (UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE) + imageName;
     }
 
-//    public void deleteImage(List<String> objectKey) {
-//
-//        log.info("이미지 이름:{}",objectKey.get(0));
-//
-//        List<DeleteObject> deleteObjectList = objectKey.stream().map(DeleteObject::new).toList();
-//        minioClient.removeObjects(RemoveObjectsArgs.builder()
-//                .bucket(bucket)
-//                .objects(deleteObjectList)
-//                .build()
-//        );
-//    }
-
     public void deleteImage(List<String> objectKey) {
         try {
             List<DeleteObject> deleteObjectList = objectKey.stream()
@@ -103,6 +92,14 @@ public class ImageService {
             log.info("삭제 요청 프로세스 완료");
         } catch (Exception e) {
             log.error("삭제 중 예외 발생: {}", e.getMessage());
+        }
+    }
+
+    public void updateImage(String prevKey, String currentKey) {
+        if (!prevKey.equalsIgnoreCase(currentKey)) {
+            List<String> imageKeyList = new ArrayList<>();
+            imageKeyList.add(prevKey);
+            deleteImage(imageKeyList);
         }
     }
 
