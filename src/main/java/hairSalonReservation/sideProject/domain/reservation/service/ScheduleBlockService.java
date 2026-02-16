@@ -37,7 +37,6 @@ public class ScheduleBlockService {
     private final ScheduleBlockRepository scheduleBlockRepository;
     private final ScheduleBlockRepositoryCustomImpl blockRepositoryCustom;
     private final DesignerRepository designerRepository;
-    private final ReservationRepositoryCustomImpl repositoryCustom;
     private final ShopRepository shopRepository;
 
 
@@ -84,7 +83,6 @@ public class ScheduleBlockService {
         List<ScheduleBlock> blockList = blockRepositoryCustom.findByDesignerIdAndMonth(designerId, month);
         return ReadClosedDaysResponse.from(blockList);
     }
-
 
     public List<TimeSlotResponse> readTimeSlotByDesignerId(Long designerId, LocalDate date) {
 

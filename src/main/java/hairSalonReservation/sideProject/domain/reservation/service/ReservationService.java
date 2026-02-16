@@ -63,16 +63,15 @@ public class ReservationService {
         ServiceMenu serviceMenu = serviceMenuRepository.findById(request.serviceMenuId())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.SERVICE_MENU_NOT_FOUND));
 
-        Reservation reservation = Reservation.of(serviceMenu, designer, user, request.date(), request.time());
-        ScheduleBlock block = ScheduleBlock.of(designer, reservation, BlockType.RESERVATION, request.date(), request.time());
+        ScheduleBlock block = ScheduleBlock.of(designer, BlockType.RESERVATION, request.date(), request.time());
+        Reservation reservation = Reservation.of(serviceMenu, user, block);
 
         try {
-            reservationRepository.save(reservation);
             scheduleBlockRepository.save(block);
+            reservationRepository.save(reservation);
         } catch (DataIntegrityViolationException ex) {
             throw new BadRequestException(ErrorCode.TIME_SLOT_ALREADY_BOOKED);
         }
-
         return ReservationResponse.from(reservation);
     }
 
@@ -83,17 +82,19 @@ public class ReservationService {
 
     public CursorPageResponse<ReservationResponse> readByUserId(Long userId) {
 
-        List<ReservationResponse> responseList =  reservationRepositoryCustom.findByUserId(userId);
+        List<ReservationResponse> responseList = reservationRepositoryCustom.findByUserId(userId);
         return CursorPageResponse.of(responseList, ReservationResponse::id);
     }
 
-    public ReservationResponse readById(Long userId, Long reservationId){
+    public ReservationResponse readById(Long userId, Long reservationId) {
 
         Reservation reservation = reservationRepository.findById(reservationId)
-               .orElseThrow(() -> new NotFoundException(ErrorCode.RESERVATION_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.RESERVATION_NOT_FOUND));
 
-       if(!reservation.getUser().getId().equals(userId)){throw new ForbiddenException(ErrorCode.FORBIDDEN);}
-       return ReservationResponse.from(reservation);
+        if (!reservation.getUser().getId().equals(userId)) {
+            throw new ForbiddenException(ErrorCode.FORBIDDEN);
+        }
+        return ReservationResponse.from(reservation);
     }
 
     @Transactional
