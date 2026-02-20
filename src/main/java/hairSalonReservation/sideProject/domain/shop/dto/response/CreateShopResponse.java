@@ -19,7 +19,7 @@ public record CreateShopResponse(
         LocalTime endTime,
         String introduction,
         String snsUriList,
-        List<String> shopTagList,
+        List<String> shopTagIdSet,
         ShopStatus shopStatus,
         LocalDateTime createdAt
 ) {

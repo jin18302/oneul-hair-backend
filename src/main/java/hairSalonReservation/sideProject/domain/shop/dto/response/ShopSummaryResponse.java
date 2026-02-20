@@ -13,8 +13,8 @@ import java.util.Objects;
 @Getter
 public final class ShopSummaryResponse {
     private final Long id;
-    private final String mainImage;
     private final String name;
+    private final String mainImage;
     private final String introduction;
     private final String address;
     private final ShopStatus shopStatus;
