@@ -23,6 +23,7 @@ public class Reservation {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
+    @OneToOne
     private ScheduleBlock scheduleBlock;
 
     @Enumerated(EnumType.STRING)
