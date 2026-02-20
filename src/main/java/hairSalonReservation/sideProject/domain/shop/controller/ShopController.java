@@ -32,9 +32,9 @@ public class ShopController {
     @GetMapping("/auth/shops")//o
     public ResponseEntity<CursorPageResponse<ShopSummaryResponse>> readByFilter(
             @RequestParam(required = false, name = "area") List<String> areaList,
-            @RequestParam(required = false, name = "tagIdList") List<Long> tagList,// TODO: 사이즈 제한을 두어야함
-            @RequestParam(required = false, name = "lastCursor", defaultValue = "0")String lastCursor,
-            @RequestParam(required = false, name = "order", defaultValue = "ASC")String order,
+            @RequestParam(required = false, name = "tagIdList", defaultValue = "") List<Long> tagList,// TODO: 사이즈 제한을 두어야함
+            @RequestParam(required = false, name = "lastCursor")String lastCursor,
+            @RequestParam(required = false, name = "order", defaultValue = "ASC") String order,
             @RequestParam(required = false, name = "sortFelid", defaultValue = "CREATED_AT") String sortFelid
     ) {
         CursorPageResponse<ShopSummaryResponse> shopResponsePage = shopService.readByFilter(areaList, tagList, order, sortFelid, lastCursor);

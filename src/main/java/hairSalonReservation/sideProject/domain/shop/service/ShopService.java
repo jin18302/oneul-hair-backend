@@ -19,7 +19,6 @@ import hairSalonReservation.sideProject.domain.shop.dto.response.ShopDetailRespo
 import hairSalonReservation.sideProject.domain.shop.dto.response.ShopSummaryResponse;
 import hairSalonReservation.sideProject.domain.shop.entity.Shop;
 import hairSalonReservation.sideProject.domain.shop.entity.ShopSortField;
-import hairSalonReservation.sideProject.domain.shop.entity.ShopStatus;
 import hairSalonReservation.sideProject.domain.shop.repository.ShopRepository;
 import hairSalonReservation.sideProject.domain.shop.repository.ShopRepositoryCustomImpl;
 import hairSalonReservation.sideProject.domain.user.entity.User;
@@ -69,7 +68,9 @@ public class ShopService {
         return CreateShopResponse.from(shop);
     }
 
-    public CursorPageResponse<ShopSummaryResponse> readByFilter(List<String> areaList, List<Long> tagList, String order, String sortFelid, String lastCursor) {
+    public CursorPageResponse<ShopSummaryResponse> readByFilter(
+            List<String> areaList, List<Long> tagList, String order, String sortFelid, String lastCursor
+    ){
 
         List<ShopSummaryResponse> shopSummaryResponseList = shopRepositoryCustom
                 .findByFilter(areaList, tagList, ShopSortField.valueOf(sortFelid), Order.valueOf(order), lastCursor);
