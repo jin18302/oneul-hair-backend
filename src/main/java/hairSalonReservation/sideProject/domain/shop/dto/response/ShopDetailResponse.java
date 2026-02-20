@@ -19,7 +19,7 @@ public record ShopDetailResponse(
         LocalTime endTime,
         String introduction,
         String snsUriList,
-        List<String> shopTagList,
+        List<ShopTagResponse> shopTagIdSet,
         ShopStatus shopStatus,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
@@ -27,12 +27,12 @@ public record ShopDetailResponse(
 ) {
     public static ShopDetailResponse from(Shop shop) {
 
-        List<String> shopTagList = shop.getShopTagMapperList().stream().map(s -> s.getShopTag().getName()).toList();
+        List<ShopTagResponse> shopTagList = shop.getShopTagMapperList().stream().map(s ->ShopTagResponse.from(s.getShopTag())).toList();
 
         return new ShopDetailResponse(
                 shop.getId(),
-                shop.getMainImage(),
                 shop.getName(),
+                shop.getMainImage(),
                 shop.getAddress(),
                 shop.getPhoneNumber(),
                 shop.getOpenTime(),
