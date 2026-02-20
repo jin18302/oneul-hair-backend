@@ -22,8 +22,8 @@ public class ImageController {
     }
 
 
-    @GetMapping("/images/view/{imageName}")
-    public ResponseEntity<PresignedUrlResponse> getPresignedViewUrl(@PathVariable(name = "imageName") String imageName) {
+    @GetMapping("/images/view")
+    public ResponseEntity<PresignedUrlResponse> getPresignedViewUrl(@RequestParam(name = "imageName") String imageName) {
         return ResponseEntity.ok( imageService.generatePresignedAccessUrl(imageName));
     }
 }
