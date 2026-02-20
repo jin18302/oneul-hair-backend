@@ -19,10 +19,10 @@ public record ReservationResponse(
         return new ReservationResponse(
                 reservation.getId(),
                 reservation.getServiceMenu().getName(),
-                reservation.getDesigner().getName(),
+                reservation.getScheduleBlock().getDesigner().getName(),
                 reservation.getReservationStatus(),
-                reservation.getDate(),
-                reservation.getTime()
+                reservation.getScheduleBlock().getDate(),
+                reservation.getScheduleBlock().getTime()
         );
     }
 }

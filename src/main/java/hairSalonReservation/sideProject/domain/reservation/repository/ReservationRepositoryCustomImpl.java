@@ -20,6 +20,7 @@ import static hairSalonReservation.sideProject.domain.reservation.entity.QReserv
 import static hairSalonReservation.sideProject.domain.shop.entity.QShop.shop;
 import static hairSalonReservation.sideProject.domain.user.entity.QUser.user;
 
+
 @Slf4j
 @Repository
 @RequiredArgsConstructor
@@ -35,9 +36,9 @@ public class ReservationRepositoryCustomImpl implements ReservationRepositoryCus
                 .select(reservation.count())
                 .from(reservation)
                 .where(
-                        reservation.designer.id.eq(designerId),
-                        reservation.date.eq(date),
-                        reservation.time.eq(time)
+                        reservation.scheduleBlock.designer.id.eq(designerId),
+                        reservation.scheduleBlock.date.eq(date),
+                        reservation.scheduleBlock.time.eq(time)
                 )
                 .fetchOne();
 
@@ -52,15 +53,15 @@ public class ReservationRepositoryCustomImpl implements ReservationRepositoryCus
                         ReservationResponse.class,
                         reservation.id,
                         reservation.serviceMenu.name,
-                        reservation.designer.name,
+                        reservation.scheduleBlock.designer.name,
                         reservation.reservationStatus,
-                        reservation.date,
-                        reservation.time
+                        reservation.scheduleBlock.date,
+                        reservation.scheduleBlock.time
                 ))
                 .from(reservation)
                 .where(
-                        reservation.designer.id.eq(designerId),
-                        reservation.date.eq(Objects.requireNonNullElseGet(date, LocalDate::now))
+                        reservation.scheduleBlock.designer.id.eq(designerId),
+                        reservation.scheduleBlock.date.eq(Objects.requireNonNullElseGet(date, LocalDate::now))
                 )
                 .fetch();
     }
@@ -74,10 +75,10 @@ public class ReservationRepositoryCustomImpl implements ReservationRepositoryCus
                         ReservationResponse.class,
                         reservation.id,
                         reservation.serviceMenu.name,
-                        reservation.designer.name,
+                        reservation.scheduleBlock.designer.name,
                         reservation.reservationStatus,
-                        reservation.date,
-                        reservation.time
+                        reservation.scheduleBlock.date,
+                        reservation.scheduleBlock.time
                 ))
                 .from(reservation)
                 .where(reservation.user.id.eq(userId))
@@ -91,11 +92,11 @@ public class ReservationRepositoryCustomImpl implements ReservationRepositoryCus
                 .select(reservation)
                 .from(reservation)
                 .join(reservation.user, user).fetchJoin()
-                .join(reservation.designer, designer).fetchJoin()
+                .join(reservation.scheduleBlock.designer, designer).fetchJoin()
                 .join(designer.shop, shop).fetchJoin()
                 .where(
-                        reservation.date.eq(date),
-                        reservation.time.eq(time),
+                        reservation.scheduleBlock.date.eq(date),
+                        reservation.scheduleBlock.time.eq(time),
                         reservation.id.gt(cursor)
                 )
                 .orderBy(reservation.id.asc())

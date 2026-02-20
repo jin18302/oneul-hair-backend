@@ -1,7 +1,5 @@
 package hairSalonReservation.sideProject.domain.reservation.repository;
 
-import hairSalonReservation.sideProject.common.cursor.CursorPageResponse;
-import hairSalonReservation.sideProject.domain.reservation.dto.request.RequestArgDto;
 import hairSalonReservation.sideProject.domain.reservation.dto.response.ReservationResponse;
 import hairSalonReservation.sideProject.domain.reservation.entity.Reservation;
 
