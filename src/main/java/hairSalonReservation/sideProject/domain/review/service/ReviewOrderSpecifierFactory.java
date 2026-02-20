@@ -12,15 +12,15 @@ import org.springframework.stereotype.Component;
 public class ReviewOrderSpecifierFactory implements OrderSpecifierFactory<QReview, ReviewSortField> {
 
     @Override
-    public OrderSpecifier<?> generateOrderSpecifier(QReview qReview, ReviewSortField sortField, Order order) {
-        Expression expression;
+    public OrderSpecifier[] generateOrderSpecifier(QReview review, ReviewSortField sortField, Order order) {
 
+        Expression expression;
         switch (sortField) {
-            case CREATED_AT -> expression = qReview.createdAt;
-            case RATING -> expression = qReview.rating;
+            case CREATED_AT -> expression = review.createdAt;
+            case RATING -> expression = review.rating;
             default -> throw new RuntimeException();
         }
 
-        return new OrderSpecifier<>(order, expression);
+        return new OrderSpecifier[]{ new OrderSpecifier(order, expression), new OrderSpecifier(Order.DESC, review.id)};
     }
 }
